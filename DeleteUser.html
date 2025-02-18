@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .filter-container input {
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        input,
+        select,
+        button {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .table-container {
+            max-height: 500px;
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: auto;
+            white-space: nowrap;
+        }
+
+        .customer-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            /* Ensures table does not shrink too much */
+        }
+
+        .customer-table th,
+        .customer-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            min-width: 150px;
+            /* Ensures columns don’t shrink */
+        }
+
+        .customer-table thead {
+            position: sticky;
+            top: 0;
+            background: white;
+            /* Keeps header visible while scrolling */
+            z-index: 2;
+        }
+
+        .date-input {
+            color: gray;
+        }
+
+        .date-input:valid {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Customer List</h2>
+    <a href="AddUser.html">Add Customer</a>
+
+    <div class="filter-container">
+        <input type="text" id="fullName" placeholder="Full Name">
+        <input type="tel" id="mobileNumber" placeholder="Mobile Number">
+        <!-- <select id="status">
+            <option value="">All</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select> -->
+
+        <span style="width: 100%; margin-right: 20px;">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" label="Start Date">
+        </span>
+
+        <button onclick="fetchData()" style="width: 100%; margin-bottom: 20px;">Apply Filters</button>
+    </div>
+
+    <div class="table-container">
+        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Mobile Number</th>
+                    <th>Start Date</th>
+                    <th>Status</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody id="customerList">
+                <tr>
+                    <td colspan="5">Loading...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function fetchData() {
+            const fullName = document.getElementById("fullName").value;
+            const mobileNumber = document.getElementById("mobileNumber").value;
+            const startDate = document.getElementById("startDate").value;
+
+            const params = new URLSearchParams({
+                action: "fetchFiltered",
+                fullName,
+                mobileNumber,
+                startDate,
+            }).toString();
+
+            const url = 'https://script.google.com/macros/s/AKfycbyOloHrVTdGcW03ImW6gfpZer32HM1p5PnsXf2gwTEV6zIPjSxx353TVnoPn3Zs19Z2/exec';
+
+            fetch(`${url}?${params}`, {
+                method: "GET",
+                redirect: "follow"
+            })
+                .then((response) => response.text())
+                .then(data => updateTable(JSON.parse(data)))
+                .catch(error => console.error("Error fetching data:", error));
+        }
+
+        function updateTable(data) {
+            console.log('data', data);
+
+            const tableBody = document.getElementById("customerList");
+            tableBody.innerHTML = "";
+
+            if (data.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='5'>No data found</td></tr>";
+                return;
+            }
+
+            data.records.forEach(item => {
+                const row = `<tr>
+                    <td>${item.fullName || "N/A"}</td>
+                    <td>${item.mobileNumber || "N/A"}</td>
+                    <td>${item.startDate || "N/A"}</td>
+                    <td>${item.status || "N/A"}</td>
+                    <td>
+                          <img src="${item.image}" alt="User Image" 
+                            style="width: 50px; height: 50px; cursor: pointer;"
+                            onclick="openImage('${item.image}')">
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        window.onload = fetchData;
+
+        // Function to open image in a new tab
+        function openImage(imageSrc) {
+            if (imageSrc) {
+                const newWindow = window.open();
+                newWindow.document.write(`<img src="${imageSrc}" style="width:100%">`);
+            }
+        }
+
+        function handleDateBlur(input) {
+            if (!input.value) {
+                input.type = 'text';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

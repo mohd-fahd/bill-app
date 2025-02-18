@@ -1,0 +1,110 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.form-container {
+    /* max-width: 400px; */
+    margin: auto;
+    margin-top: 20px;
+}
+
+.form-container input {
+    width: 100%;
+    border-radius: 6px;
+}
+
+input,
+select,
+button {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+.error {
+    color: red;
+}
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.filter-container input {
+    width: 100%;
+    border-radius: 6px;
+}
+
+input,
+select,
+button {
+    padding: 8px;
+    font-size: 14px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.table-container {
+    max-height: 500px;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
+}
+
+.customer-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+    /* Ensures table does not shrink too much */
+}
+
+.customer-table th,
+.customer-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    min-width: 150px;
+    /* Ensures columns don’t shrink */
+}
+
+.customer-table thead {
+    position: sticky;
+    top: 0;
+    background: white;
+    /* Keeps header visible while scrolling */
+    z-index: 2;
+}
+
+.date-input {
+    color: gray;
+}
+
+.date-input:valid {
+    color: black;
+}
